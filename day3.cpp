@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cctype>
 #include <ios>
+#include <regex>
 #include <string>
 #if __has_include(<bits/stdc++.h>)
     #include <bits/stdc++.h>
@@ -78,6 +79,8 @@ typedef vector<pii> vpii;
         } \
         return true; \
     }())
+
+#define join(vec, sep) std::accumulate(std::next((vec).begin()), (vec).end(), (vec).empty() ? std::string{} : (vec)[0], [&](const std::string& a, const std::string& b) { return a + sep + b; })
 
 vs split(string s, string delimiter) {
     vector<string> res;
@@ -426,12 +429,28 @@ void solvedayone(vs lines){
     trace(temp);
 }
 
-// for part 2 just use vim regez to manipulate the input file
-// %s/don't()\_.\{-}do()//g, this deletes all the text between don't and do 
+void solvedaytwo(vs lines){
+    string line = join(lines, "");
+    int temp = 0;
+    line = regex_replace(line, regex("don't\\(\\).*?do\\(\\)"), "");
+
+    vs words = split(line, "mul(");
+    for (auto word : words) {
+        vs split_more = split(word, ")");
+        if (split_more.size() < 1) continue;
+        vs split_word = split(split_more[0], ",");
+        if (split_word.size() != 2) continue;
+        if (!is_number(split_word[0]) || !is_number(split_word[1])) continue;
+        temp += stoi(split_word[0]) * stoi(split_word[1]);
+    }
+
+    trace(temp);
+}
 
 void solvethetestcase(vs &lines){
 // void solvethetestcase(){
     // cin >> n;
     // cin.ignore();
     solvedayone(lines);
+    solvedaytwo(lines);
 }
